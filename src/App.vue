@@ -5,7 +5,7 @@
     </header>
     <main>
       <section class="player">
-        <h2 class="titulo-cancion">{{ actual.titulo }} - <span>{{ actual.artist }}</span></h2>
+        <h2 class="titulo-cancion">{{ actual.titulo }} - <span>{{ actual.artista }}</span></h2>
         <div class="controls">
           <button class="prev" @click="prev">Anterior</button>
           <button class="play" v-if="!isPlaying" @click="play">Reproducir</button>
@@ -14,9 +14,9 @@
         </div>
       </section>
       <section class="playlist">
-        <h3>Lista De Reproducción</h3>
-        <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == actual.src) ? 'song playing' : 'song'">
-          {{ song.titulo }} - {{ song.artist }}
+        <h3 class="titulo-playlist">Lista De Reproducción</h3>
+        <button v-for="cancion in canciones" :key="cancion.src" @click="play(cancion)" :class="(cancion.src == actual.src) ? 'cancion playing' : 'cancion'">
+          {{ cancion.titulo }} - {{ cancion.artista }}
         </button>
       </section>
     </main>
@@ -31,34 +31,39 @@ export default {
       actual: {},
       index: 0,
       isPlaying: false,
-      songs: [
+      canciones: [
         {
           titulo: 'Get You The Moon',
-          artist: 'Kina',
+          artista: 'Kina',
           src: require('./assets/kina-get-you-the-moon.mp3')
         },
         {
           titulo: 'Ure Mine',
-          artist: 'Kina',
+          artista: 'Kina',
           src: require('./assets/kina-ure-mine.mp3')
+        },
+        {
+          titulo: 'There’s No Need',
+          artista: 'Towerz',
+          src: require('./assets/towerz-theres-no-need.mp3')
         }
       ],
       player: new Audio()
     }
   },
   methods: {
-    play (song) {
-      if (typeof song.src != "undefined") {
-        this.actual = song;
+    play (cancion) {
+      if (typeof cancion.src != "undefined") {
+        this.actual = cancion;
         this.player.src = this.actual.src;
       }
       this.player.play();
       this.player.addEventListener('ended', function () {
         this.index++;
-        if (this.index > this.songs.length - 1) {
+        if (this.index > this.canciones.length - 1) {
           this.index = 0;
         }
-        this.actual = this.songs[this.index];
+        this.actual = this.canciones[this.index];
         this.play(this.actual);
       }.bind(this));
       this.isPlaying = true;
@@ -69,23 +74,23 @@ export default {
     },
     next () {
       this.index++;
-      if (this.index > this.songs.length - 1) {
+      if (this.index > this.canciones.length - 1) {
         this.index = 0;
       }
-      this.actual = this.songs[this.index];
+      this.actual = this.canciones[this.index];
       this.play(this.actual);
     },
     prev () {
       this.index--;
       if (this.index < 0) {
-        this.index = this.songs.length - 1;
+        this.index = this.canciones.length - 1;
       }
-      this.actual = this.songs[this.index];
+      this.actual = this.canciones[this.index];
       this.play(this.actual);
     }
   },
   created () {
-    this.actual = this.songs[this.index];
+    this.actual = this.canciones[this.index];
     this.player.src = this.atual.src;
   }
 }
@@ -111,7 +116,7 @@ header {
 main {
   width: 100%;
   max-width: 768px;
-  margin: 0 auto;
+  margin: 100px auto 100px auto;
   padding: 25px;
 }
 .titulo-cancion {
@@ -121,9 +126,16 @@ main {
   text-transform: uppercase;
   text-align: center;
 }
-.song-title span {
+.titulo-cancion span {
   font-weight: 400;
   font-style: italic;
+}
+.titulo-playlist {
+  color: #53565A;
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
 }
 .controls {
   display: flex;
@@ -169,7 +181,7 @@ button:hover {
   margin-bottom: 30px;
   text-align: center;
 }
-.playlist .song {
+.playlist .cancion {
   display: block;
   width: 100%;
   padding: 15px;
@@ -177,10 +189,10 @@ button:hover {
   font-weight: 700;
   cursor: pointer;
 }
-.playlist .song:hover {
+.playlist .cancion:hover {
   color: #FF5858;
 }
-.playlist .song.playing {
+.playlist .cancion.playing {
   color: #FFF;
   background-image: linear-gradient(to right, #CC2E5D, #FF5858);
 }
